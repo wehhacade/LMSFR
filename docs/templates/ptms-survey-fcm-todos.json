@@ -1,0 +1,42 @@
+[
+  {
+    "task_title": "Align Firebase jimcaplaya — backend + mobile_services",
+    "title": "Smoke test send_push_to_token",
+    "description": "Django shell or POST /api/v3/survey/expired-deadlines/ with send_notification=true on test response"
+  },
+  {
+    "task_title": "Commit survey FCM backend to git",
+    "title": "Exclude mobile_services from commit",
+    "description": "mobile_services is gitignored — backend only"
+  },
+  {
+    "task_title": "Rebuild mobile_services after applicationId change",
+    "title": "Grant POST_NOTIFICATIONS on Android 13+",
+    "description": "Accept prompt on first launch after login"
+  },
+  {
+    "task_title": "E2E test survey deadline FCM push",
+    "title": "Backdate submitted_at if needed",
+    "description": "Django admin or shell: set submitted_at to 2 days ago for faster test"
+  },
+  {
+    "task_title": "E2E test survey deadline FCM push",
+    "title": "Close task when push received",
+    "description": "Update ptmsmanagement status"
+  },
+  {
+    "task_title": "Add celery-beat to docker-compose",
+    "title": "Close when beat container healthy",
+    "description": "Update tracker status in ptmsmanagement"
+  },
+  {
+    "task_title": "Prevent duplicate deadline FCM notifications",
+    "title": "Decide notify-once vs daily reminder",
+    "description": "Product choice before implementing dedup"
+  },
+  {
+    "task_title": "Survey FCM ops runbook",
+    "title": "Add to repo or share in chat",
+    "description": "docs/ or mobile_services/README.md"
+  }
+]

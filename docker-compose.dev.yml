@@ -1,0 +1,29 @@
+# Optional hot-reload overlay for local experiments ONLY.
+# Do NOT use on the live lmsbr.com stack while users are online.
+#
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml docker compose up -d django celery celery-beat
+#
+# Live production should stay on docker-compose.yml alone (image-baked code, no --reload).
+
+services:
+  django:
+    volumes:
+      - ./backend:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    command: >
+      sh -c "echo 'Waiting for database...' &&
+             until python -c \"import socket; s=socket.socket(); s.settimeout(1); s.connect(('db',5432)); s.close()\" 2>/dev/null; do sleep 1; done &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --reload"
+
+  celery:
+    volumes:
+      - ./backend:/app
+      - media_volume:/app/media
+
+  celery-beat:
+    volumes:
+      - ./backend:/app
+      - media_volume:/app/media

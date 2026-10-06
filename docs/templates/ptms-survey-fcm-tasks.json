@@ -1,0 +1,238 @@
+[
+  {
+    "title": "Align Firebase jimcaplaya — backend + mobile_services",
+    "description": "Mobile google-services.json is project jimcaplaya / com.example.survey. Backend needs matching serviceAccountKey.json at backend/serviceAccountKey.json (or FIREBASE_CREDENTIALS_PATH in .env). Without this, FCM tokens register but server pushes fail.",
+    "priority": "high",
+    "task_type": "devops",
+    "due_date": "2026-07-23",
+    "estimated_hours": 1,
+    "todos": [
+      {
+        "title": "Download jimcaplaya service account JSON",
+        "description": "Firebase Console → Project settings → Service accounts → Generate new private key"
+      },
+      {
+        "title": "Save as backend/serviceAccountKey.json",
+        "description": "Or set FIREBASE_CREDENTIALS_PATH in root .env to the file path"
+      },
+      {
+        "title": "Confirm google-services.json package",
+        "description": "android/app/google-services.json must list com.example.survey"
+      },
+      {
+        "title": "Restart django + celery after credential change",
+        "description": "docker compose restart django celery"
+      }
+    ]
+  },
+  {
+    "title": "Commit survey FCM backend to git",
+    "description": "Uncommitted backend work: deadline_notifications.py, views/notifications.py, urls.py, tasks.py, management command, tests, fcm.py data payload, CELERY_BEAT_SCHEDULE in base.py, serializers deadline_days.",
+    "priority": "high",
+    "task_type": "feature",
+    "due_date": "2026-07-24",
+    "estimated_hours": 0.5,
+    "todos": [
+      {
+        "title": "Review diff in apps/surveys and apps/suspects/fcm.py",
+        "description": "Exclude mobile_services (gitignored)"
+      },
+      {
+        "title": "Run tests",
+        "description": "docker compose exec django python manage.py test apps.surveys.tests.test_deadline_notifications"
+      },
+      {
+        "title": "Commit and push when VPN up",
+        "description": "Git remote 192.168.129.40"
+      }
+    ]
+  },
+  {
+    "title": "Add celery-beat to docker-compose",
+    "description": "CELERY_BEAT_SCHEDULE hourly notify-expired-survey-deadlines exists in settings but no beat container — deadlines will not auto-notify.",
+    "priority": "high",
+    "task_type": "devops",
+    "due_date": "2026-07-25",
+    "estimated_hours": 1,
+    "todos": [
+      {
+        "title": "Add celery-beat service to docker-compose.yml",
+        "description": "Same image as celery worker"
+      },
+      {
+        "title": "Command: celery -A config.celery beat --loglevel=info",
+        "description": "DJANGO_SETTINGS_MODULE=config.settings.dev"
+      },
+      {
+        "title": "Verify beat schedules hourly task",
+        "description": "docker compose logs celery-beat — look for notify-expired-survey-deadlines"
+      },
+      {
+        "title": "Document in Makefile or PROJECT.md",
+        "description": "Optional make target"
+      }
+    ]
+  },
+  {
+    "title": "Rebuild mobile_services after applicationId change",
+    "description": "applicationId is com.example.survey. Uninstall old com.lmsbr.services APK. Firebase packages installed. google-services.json in place.",
+    "priority": "high",
+    "task_type": "testing",
+    "due_date": "2026-07-23",
+    "estimated_hours": 1,
+    "todos": [
+      {
+        "title": "Uninstall old APK from tablet",
+        "description": "SM-X115 — old package id was com.lmsbr.services"
+      },
+      {
+        "title": "npm install && npm run android",
+        "description": "Native rebuild required for Firebase"
+      },
+      {
+        "title": "Login as survey-mobile user",
+        "description": "user_type=survey-mobile or is_mobile=true"
+      },
+      {
+        "title": "Verify FCM token in fcmtoken table",
+        "description": "POST /api/v3/survey/fcm-token/ after login"
+      }
+    ]
+  },
+  {
+    "title": "E2E test survey deadline FCM push",
+    "description": "Submit response with deadline_days, wait or backdate, trigger notify, confirm Somali push on device.",
+    "priority": "high",
+    "task_type": "testing",
+    "due_date": "2026-07-27",
+    "estimated_hours": 2,
+    "todos": [
+      {
+        "title": "Submit survey with deadline_days=1",
+        "description": "From mobile_services submit form — Maalmaha xadka field"
+      },
+      {
+        "title": "Dry-run expired list",
+        "description": "python manage.py notify_expired_survey_deadlines --dry-run"
+      },
+      {
+        "title": "Send notification",
+        "description": "POST /api/v3/survey/expired-deadlines/ with send_notification=true OR management command without --dry-run"
+      },
+      {
+        "title": "Confirm push on tablet",
+        "description": "Body: Waqtigu wuu dhacay — type survey_deadline_expired"
+      }
+    ]
+  },
+  {
+    "title": "Notification tap opens response in mobile_services",
+    "description": "Handle FCM data payload survey_deadline_expired → navigate to ResponseProfile screen.",
+    "priority": "medium",
+    "task_type": "feature",
+    "due_date": "2026-07-31",
+    "estimated_hours": 3,
+    "todos": [
+      {
+        "title": "Parse response_id from notification data",
+        "description": "onNotificationOpenedApp + getInitialNotification"
+      },
+      {
+        "title": "Navigate to ResponseProfile",
+        "description": "navigation ref from App.tsx"
+      },
+      {
+        "title": "Test cold start from notification",
+        "description": "App killed → tap notification"
+      }
+    ]
+  },
+  {
+    "title": "Prevent duplicate deadline FCM notifications",
+    "description": "Hourly beat can re-notify same expired response every run. Add deadline_notified_at on Response or notification log.",
+    "priority": "medium",
+    "task_type": "bug",
+    "due_date": "2026-08-04",
+    "estimated_hours": 2,
+    "todos": [
+      {
+        "title": "Add deadline_notified_at field + migration",
+        "description": "apps/surveys/models.py Response"
+      },
+      {
+        "title": "Set timestamp after successful FCM send",
+        "description": "deadline_notifications.py"
+      },
+      {
+        "title": "Filter queryset to not-yet-notified rows",
+        "description": "notify_expired_deadlines service"
+      },
+      {
+        "title": "Update tests",
+        "description": "test_deadline_notifications.py"
+      }
+    ]
+  },
+  {
+    "title": "Add deadline_days to web survey submit form",
+    "description": "Backend and mobile_services accept deadline_days; web dashboard submit form does not expose it yet.",
+    "priority": "medium",
+    "task_type": "feature",
+    "due_date": "2026-08-03",
+    "estimated_hours": 1.5,
+    "todos": [
+      {
+        "title": "Add field to survey-submit-page.tsx",
+        "description": "Optional positive integer days"
+      },
+      {
+        "title": "Pass deadline_days in surveys API submit",
+        "description": "frontend/src/lib/surveys-api.ts"
+      },
+      {
+        "title": "Smoke test on web",
+        "description": "Submit live survey, check response detail deadline_at"
+      }
+    ]
+  },
+  {
+    "title": "Survey FCM ops runbook",
+    "description": "Document CLI, API, celery beat, Firebase credential rotation for field team / ops.",
+    "priority": "medium",
+    "task_type": "documentation",
+    "due_date": "2026-07-29",
+    "estimated_hours": 1,
+    "todos": [
+      {
+        "title": "API examples",
+        "description": "fcm-token, expired-deadlines curl/PowerShell"
+      },
+      {
+        "title": "Management command docs",
+        "description": "notify_expired_survey_deadlines --dry-run"
+      },
+      {
+        "title": "Mobile setup section",
+        "description": "Link mobile_services/README Firebase section"
+      }
+    ]
+  },
+  {
+    "title": "Legacy API paths for survey FCM (optional)",
+    "description": "Old system used root paths under legacy API. v3 has /survey/fcm-token/ and /survey/expired-deadlines/. Add stubs if legacy clients still call old URLs.",
+    "priority": "low",
+    "task_type": "feature",
+    "due_date": "2026-08-07",
+    "estimated_hours": 1,
+    "todos": [
+      {
+        "title": "List legacy URL names from old Surveys app",
+        "description": "surveys-save-fcm-token, get_expired_deadlines"
+      },
+      {
+        "title": "Add legacy_api url stubs if needed",
+        "description": "apps/legacy_api/urls.py"
+      }
+    ]
+  }
+]

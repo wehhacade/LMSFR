@@ -1,0 +1,26 @@
+{
+  "name": "Ilaalo Shacab",
+  "short_name": "Ilaalo",
+  "description": "Ilaalo Shacab field operations PWA",
+  "start_url": "/api/tiphone",
+  "scope": "/api/tiphone",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0805",
+  "theme_color": "#e9c177",
+  "lang": "so",
+  "icons": [
+    {
+      "src": "/tiphone/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/tiphone/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

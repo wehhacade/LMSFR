@@ -1,0 +1,11 @@
+title,description,priority,task_type,due_date,estimated_hours
+Align Firebase jimcaplaya — backend + mobile_services,"Mobile google-services.json is project jimcaplaya / com.example.survey. Backend needs matching serviceAccountKey.json at backend/serviceAccountKey.json (or FIREBASE_CREDENTIALS_PATH in .env). Without this, FCM tokens register but server pushes fail.",high,devops,2026-07-23,1
+Commit survey FCM backend to git,"Uncommitted backend work: deadline_notifications.py, views/notifications.py, urls.py, tasks.py, management command, tests, fcm.py data payload, CELERY_BEAT_SCHEDULE in base.py, serializers deadline_days.",high,feature,2026-07-24,0.5
+Add celery-beat to docker-compose,CELERY_BEAT_SCHEDULE hourly notify-expired-survey-deadlines exists in settings but no beat container — deadlines will not auto-notify.,high,devops,2026-07-25,1
+Rebuild mobile_services after applicationId change,applicationId is com.example.survey. Uninstall old com.lmsbr.services APK. Firebase packages installed. google-services.json in place.,high,testing,2026-07-23,1
+E2E test survey deadline FCM push,"Submit response with deadline_days, wait or backdate, trigger notify, confirm Somali push on device.",high,testing,2026-07-27,2
+Notification tap opens response in mobile_services,Handle FCM data payload survey_deadline_expired → navigate to ResponseProfile screen.,medium,feature,2026-07-31,3
+Prevent duplicate deadline FCM notifications,Hourly beat can re-notify same expired response every run. Add deadline_notified_at on Response or notification log.,medium,bug,2026-08-04,2
+Add deadline_days to web survey submit form,Backend and mobile_services accept deadline_days; web dashboard submit form does not expose it yet.,medium,feature,2026-08-03,1.5
+Survey FCM ops runbook,"Document CLI, API, celery beat, Firebase credential rotation for field team / ops.",medium,documentation,2026-07-29,1
+Legacy API paths for survey FCM (optional),Old system used root paths under legacy API. v3 has /survey/fcm-token/ and /survey/expired-deadlines/. Add stubs if legacy clients still call old URLs.,low,feature,2026-08-07,1

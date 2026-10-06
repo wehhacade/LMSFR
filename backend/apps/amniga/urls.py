@@ -1,0 +1,11 @@
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from apps.amniga.views import AmnigaDashboardViewSet
+
+router = DefaultRouter()
+router.register("", AmnigaDashboardViewSet, basename="amniga")
+
+urlpatterns = [
+    path("", include(router.urls)),
+]

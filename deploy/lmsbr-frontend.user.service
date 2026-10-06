@@ -1,0 +1,19 @@
+[Unit]
+Description=LMSBR Next.js frontend (user) — lmsbr.com :3000
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/html/lmsbr-v3/frontend
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=PATH=/home/dev/.nvm/versions/node/v22.23.2/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/dev/.nvm/versions/node/v22.23.2/bin/npm run start -- -H 127.0.0.1 -p 3000
+Restart=always
+RestartSec=3
+KillSignal=SIGTERM
+TimeoutStopSec=20
+MemoryMax=1G
+
+[Install]
+WantedBy=default.target
